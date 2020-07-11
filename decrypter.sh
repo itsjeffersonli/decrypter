@@ -7,7 +7,7 @@ echo "[!!]There are already Preloaded wordlists in the wordlists folder[!!]"
 
 home=`pwd`
 #check dependencies with root access
-echo -e "\e[5mDate Logging"
+echo -e "Date Logging"
 echo  "Last Login = " $(date) >> log.txt
 sleep 3
 
@@ -107,57 +107,72 @@ if [ "$fail" == "1" ]
     		exit
 fi
 #codes for the program
+echo -e "[1] HashCat"
+echo -e "[2] John"
+echo -e "[3] ssh2john"
+read -p "[!]Choose The tool you want to use[!]:	" option
 
-read -p "[1]hashcat
-[2]john
-[3]ssh2john
-[!]Choose The tool you want to use[!]:	" option
+#hashcat
+if [ $option == 1 ]
+	then
+		read -p "Do you want to see the hashes types(Y or N): " bool
+			if [ $bool == "Y" ] || [ $bool == "y" ]
+				then
+					cat  files/'hash modes'
+					sleep 1
+					read -p "input the hash type(number only): " hashtype
+		  					read -p "wordlist(just the file name):" wordlists
+	  						read -p "Input your file you want to crack: " file_hash
+								rm $filehashes
+								sleep 2
+								cp $home/files_to_use/$file_hash $home
+   					         	hashcat -m $hashtype $file_hash wordlists/$wordlists
+			fi
+           		if [ $bool == "N" ] || [ $bool == "n" ]
+ 	             		then
+   			    		    read -p "input the hash type(number only): " hashtype
+		  					read -p "wordlist(just the file name):" wordlists
+	  						read -p "Input your file you want to crack: " file_hash
+								rm $filehashes
+								sleep 2
+								cp $home/files_to_use/$file_hash $home
+   					         	hashcat -m $hashtype $file_hash wordlists/$wordlists
+	                fi
+fi
 
-#if [ $option == 1 ]
-#	then
-#		read -p "Do you want to see the hashes types(Y or N): " bool
-#			if [ $bool == "Y" ] || [ $bool == "y" ]
-#				then
-#					cat  'hash modes'
-#					read -p "Do You Want to Restart The Shell?(Y or N): " restartshell
-#						if  [ $restartshell == "Y" ] || [ $restartshell == "y" ]
-#							then
-#								$(sudo bash decrypter.sh)
-#						else
-#							exit
-#						fi
-#			fi
-#           		if [ $bool == "N" ] || [ $bool == "n" ]
-# 	             		then
-#   			    		read -p "input the hash type(number only): " hashtype
-#		  					read -p "wordlist(just the file name):" wordlists
-#	  						read -p "Input your file you want to crack: " file_hash
-#								rm $filehashes
-#								cp $home/files_to_use/$file_hash $home
-#   					         hashcat -m $hashtype $filehash wordlists/$wordlists
-#	                fi
-#fi
-
+#john
 if [ $option == 2 ]
 	then
 				read -p "Do you want to check the wordlists available?(Y or N): " wordlists_option
-				if [ $wordlists_option == "Y" ] || [ $wordlists_option == "y" ]
-					then	
-						$(ls $home/wordlists/)
-				else
-						continue		
-				fi		
+					if [ $wordlists_option == "Y" ] || [ $wordlists_option == "y" ]
+						then
+							ls -a wordlists
+					fi
+					
                 read -p "wordlist(just the file name):" wordlists
                 read -p "Input your file you want to crack: " filehash
-                	john --wordlist=wordlists/$wordlists files_to_use/$filehash
+				echo "In format hash just put the hash type(ex: md5crypt-long )"
+				read -p "Do you want to specify what format of hash?(Y or N) "  john_hash_format
+				
+					if [ $john_hash_format == "Y" ] || [ $john_hash_format == "y" ]
+						then
+							read -p "Sepcify the format: " john_format
+			                		john --wordlist=wordlists/$wordlists files_to_use/$filehash --format=$john_format
+					fi
+					
+					if [ $john_hash_format == "N" ] || [ $john_hash_format == "n" ]
+						then
+							 john --wordlist=wordlists/$wordlists files_to_use/$filehash
+					fi
 fi
 
-
+#ssh2john
 if [ $option == 3 ]
 	then
-		echo "[!!]Note: Please change your rsa key to other filename to avoid wrong conversion of rsa key[!!]"
 		read -p "Input the file name: " rsa_key
 		read -p "file name of the output: " rsa_output
+		    chmod +x files/ssh2john.py
+		    sleep 2
 			$($home/files/ssh2john.py $home/files_to_use/$rsa_key >> $home/$rsa_output)
 fi
 
