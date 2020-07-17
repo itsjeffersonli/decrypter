@@ -1,11 +1,9 @@
 #!/bin/bash
-
-
 echo "[!!]Please Read This:: Before using this tool put your files in the files_to_use directory[!!]"
 echo "[!!]There are already Preloaded wordlists in the wordlists folder[!!]"
 
-
 home=`pwd`
+rm -r output
 #check dependencies with root access
 echo -e "Date Logging"
 echo  "Last Login = " $(date) >> log.txt
@@ -146,7 +144,7 @@ fi
 echo -e "[1] HashCat"
 echo -e "[2] John"
 echo -e "[3] Hydra"
-echo -e "[4] ssh2john"
+echo -e "[4] Converters"
 
 read -p "[!]Choose The tool you want to use[!]:	" option
 
@@ -256,14 +254,52 @@ if [ $option == 3 ]
 fi
 
 
-
-#ssh2john
 if [ $option == 4 ]
 	then
-		read -p "Input the file name: " rsa_key
-		read -p "file name of the output: " rsa_output
-		    chmod +x files/ssh2john.py
-		    sleep 2
-			$($home/files/ssh2john.py $home/files_to_use/$rsa_key >> $home/$rsa_output)
-fi
+		echo "[1] ssh2john"
+		echo "[2] zip2john"	
+		read -p "What Tool do you want to use?: " tools_option
+		#ssh2john
+		if [ $tools_option == 1 ]
+			then
+				read -p "Input the file name: " rsa_key
+				read -p "file name of the output: " rsa_output
+		    	chmod +x files/ssh2john.py
+		    	sleep 2
+				$(mkdir output) 
+				$(files/ssh2john.py files_to_use/$rsa_key >> output/$rsa_output)
+				sleep 2
+				read -p "do you want to crack it?(Y or N): " ssh_pass_cracking
+					if [ $ssh_pass_cracking == "Y" ] || [ $ssh_pass_cracking == "y" ]
+						then	
+							read -p "What Wordlists You want to use: " ssh_wordlists
+							john --wordlist=wordlists/$ssh_wordlists output/$rsa_output
+					fi
+					if [ $ssh_pass_cracking == "N" ] || [ $ssh_pass_cracking == "n" ]
+						then
+							sleep 2
+							exit
+					fi		
+
+		fi
+		if [ $tools_option == 2 ]
+			then
+				read -p "Enter The Name Of the zip file including .zip : " zipfile
+				read -p "File Name of the Output: " zip_output
+				chmod +x files/zip2john 
+				$(files/zip2john files_to_use/$zipfile >> output/$zipoutput)
+				sleep 2
+				read -p "do you want to crack it?(Y or N): " zip_pass_cracking
+					if [ $zip_pass_cracking == "Y" ] || [ $zip_pass_cracking == "y" ]
+						then	
+							read -p "What Wordlists You want to use: " zip_wordlists
+							john --wordlist=wordlists/$zip_wordlists output/$zip_output
+					fi
+					if [ $zip_pass_cracking == "N" ] || [ $zip_pass_cracking == "n" ]
+						then
+							sleep 2
+							exit
+					fi
+		fi
+fi	
 
