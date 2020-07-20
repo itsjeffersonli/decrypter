@@ -157,23 +157,56 @@ if [ $option == 1 ]
 					cat  files/'hash modes'
 					sleep 1
 					read -p "input the hash type(number only): " hashtype
-		  					read -p "wordlist(just the file name):" wordlists
-	  						read -p "Input your file you want to crack: " file_hash
-								rm $filehashes
-								sleep 2
-								cp $home/files_to_use/$file_hash $home
-   					         	hashcat -m $hashtype $file_hash wordlists/$wordlists
+							read -p "Do you want to See the Available Wordlists?(Y OR N): " bool_Y_N
+							if [ $bool_Y_N == "Y" ] || [ $bool_Y_N == "y" ]
+								then
+									ls -a wordlists
+
+									read -p "wordlist(just the file name):" wordlists
+	  								read -p "Input your file you want to crack: " file_hash
+									rm $file_hash
+									sleep 2
+									cp $home/files_to_use/$file_hash $home
+   					         		hashcat -m $hashtype $file_hash wordlists/$wordlists
+							fi	
+							if [ $bool_Y_N == "N" ] || [ $bool_Y_N == "n" ]
+								then
+
+									read -p "wordlist(just the file name):" wordlists
+	  								read -p "Input your file you want to crack: " file_hash
+									rm $file_hash
+									sleep 2
+									cp $home/files_to_use/$file_hash $home
+   					         		hashcat -m $hashtype $file_hash wordlists/$wordlists
+		  					fi
 			fi
            		if [ $bool == "N" ] || [ $bool == "n" ]
  	             		then
    			    		    read -p "input the hash type(number only): " hashtype
-		  					read -p "wordlist(just the file name):" wordlists
-	  						read -p "Input your file you want to crack: " file_hash
-								rm $filehashes
-								sleep 2
-								cp $home/files_to_use/$file_hash $home
-   					         	hashcat -m $hashtype $file_hash wordlists/$wordlists
-	                fi
+							read -p "Do you want to See the Available Wordlists?(Y OR N): " bool_Y_N
+							if [ $bool_Y_N == "Y" ] || [ $bool_Y_N == "y" ]
+								then
+									ls -a wordlists
+
+									read -p "wordlist(just the file name):" wordlists
+	  								read -p "Input your file you want to crack: " file_hash
+									rm $file_hash
+									sleep 2
+									cp $home/files_to_use/$file_hash $home
+   					         		hashcat -m $hashtype $file_hash wordlists/$wordlists
+							fi	
+							if [ $bool_Y_N == "N" ] || [ $bool_Y_N == "n" ]
+								then
+
+									read -p "wordlist(just the file name):" wordlists
+	  								read -p "Input your file you want to crack: " file_hash
+									rm $file_hash
+									sleep 2
+									cp $home/files_to_use/$file_hash $home
+   					         		hashcat -m $hashtype $file_hash wordlists/$wordlists
+		  					fi
+
+	            fi
 fi
 
 #john
@@ -192,12 +225,18 @@ if [ $option == 2 ]
 
 					if [ $john_hash_format == "Y" ] || [ $john_hash_format == "y" ]
 						then
+							dir=$(locate $filehash)
+							dir1=$dir
+							cp $dir1 $home/files_to_use
 							read -p "Sepcify the format: " john_format
 			                		john --wordlist=wordlists/$wordlists files_to_use/$filehash --format=$john_format
 					fi
 
 					if [ $john_hash_format == "N" ] || [ $john_hash_format == "n" ]
 						then
+							dir=$(locate $filehash)
+							dir1=$dir
+							cp $dir1 $home/files_to_us
 							 john --wordlist=wordlists/$wordlists files_to_use/$filehash
 					fi
 fi
@@ -209,6 +248,7 @@ if [ $option == 3 ]
 		echo -e "In order the wordlists to work please drag your wordlists into the wordlists folder"
 		read -p "Do you have login user:(Y or N): " login_user
 		read -p "Do you have login pass:(Y or N): " login_pass
+		ls -a wordlists
 
 		if [ $login_user == "Y" ] || [ $login_user == "y" ] && [ $login_pass == "N" ] || [ $login_pass == "n" ]
 			then
